@@ -47,7 +47,7 @@
     },
     {
       "variables": {
-        "URL_SCHEME": "moodlemobile"
+        "URL_SCHEME": "avpmobile"
       },
       "locator": "cordova-plugin-customurlscheme",
       "id": "cordova-plugin-customurlscheme"
@@ -69,6 +69,10 @@
   ],
   "cordovaPlatforms": [
     "android",
-    "ios"
+    {
+      "platform": "ios",
+      "version": "3.9.1",
+      "locator": "ios@3.9.1"
+    }
   ]
 }
