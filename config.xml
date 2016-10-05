@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="br.pro.avp.avpmobile" version="3.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+
+<widget id="br.pro.avp.avpmobile" version="3.1.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>AVP Mobile</name>
   <description>Aplicativo Oficial do Ambiente Virtual de Pesquisa</description>
   <author href="http://www.avp.pro.br" email="mauriciorochacruz@gmail.com">Mauricio Cruz</author>
@@ -8,7 +9,9 @@
   <allow-navigation href="cdvfile:*"/>
   <allow-navigation href="content:*"/>
   <allow-navigation href="data:*"/>
+  <allow-navigation href="*" />
   <allow-intent href="*"/>
+
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

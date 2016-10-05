@@ -21,8 +21,8 @@ angular.module('mm.core.login')
  * @ngdoc controller
  * @name mmLoginSiteCtrl
  */
-.controller('mmLoginSiteCtrl', function($scope, $state, $mmSitesManager, $mmUtil, $translate, $ionicHistory, $mmApp,
-        $ionicModal, $mmLoginHelper) {
+.controller('mmLoginSiteCtrl', function($scope, $state, $mmSitesManager, $mmUtil, $ionicHistory, $mmApp, $ionicModal,
+        $mmLoginHelper) {
 
     $scope.siteurl = '';
 
@@ -51,7 +51,7 @@ angular.module('mm.core.login')
                 });
             }, function(error) {
                 modal.dismiss();
-                $mmUtil.showErrorModal(error);
+                $mmLoginHelper.treatUserTokenError(sitedata.url, error);
             });
 
         } else {
@@ -64,9 +64,7 @@ angular.module('mm.core.login')
 
                 if ($mmLoginHelper.isSSOLoginNeeded(result.code)) {
                     // SSO. User needs to authenticate in a browser.
-                    $mmUtil.showConfirm($translate('mm.login.logininsiterequired')).then(function() {
-                        $mmLoginHelper.openBrowserForSSOLogin(result.siteurl);
-                    });
+                    $mmLoginHelper.confirmAndOpenBrowserForSSOLogin(result.siteurl, result.code);
                 } else {
                     $state.go('mm_login.credentials', {siteurl: result.siteurl});
                 }

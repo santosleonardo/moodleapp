@@ -15,6 +15,7 @@
 angular.module('mm.core.login')
 
 .constant('mmLoginSSOCode', 2) // This code is returned by local_mobile Moodle plugin if SSO in browser is required.
+.constant('mmLoginSSOInAppCode', 3)
 .constant('mmLoginLaunchSiteURL', 'mmLoginLaunchSiteURL')
 .constant('mmLoginLaunchPassport', 'mmLoginLaunchPassport')
 
@@ -25,13 +26,32 @@ angular.module('mm.core.login')
  * @ngdoc service
  * @name $mmLoginHelper
  */
-.factory('$mmLoginHelper', function($q, $log, $mmConfig, mmLoginSSOCode, mmLoginLaunchSiteURL, mmLoginLaunchPassport,
-            md5, $mmSite, $mmSitesManager, $mmLang, $mmUtil, $state, $mmAddonManager, mmCoreConfigConstants) {
+.factory('$mmLoginHelper', function($q, $log, $mmConfig, mmLoginSSOCode, mmLoginSSOInAppCode, mmLoginLaunchSiteURL,
+            mmLoginLaunchPassport, md5, $mmSite, $mmSitesManager, $mmLang, $mmUtil, $state, $mmAddonManager,
+            $translate, mmCoreConfigConstants) {
 
     $log = $log.getInstance('$mmLoginHelper');
 
-    var self = {},
-        isSSOLoginOngoing = false;
+    var self = {};
+
+    /**
+     * Show a confirm modal if needed and open a browser to perform SSO login.
+     *
+     * @module mm.core.login
+     * @ngdoc method
+     * @name $mmLoginHelper#confirmAndOpenBrowserForSSOLogin
+     * @param {String} siteurl     URL of the site where the SSO login will be performed.
+     * @param {Number} typeOfLogin mmLoginSSOCode or mmLoginSSOInAppCode
+     */
+    self.confirmAndOpenBrowserForSSOLogin = function(siteurl, typeOfLogin) {
+        // Show confirm only if it's needed. Treat "false" (string) as false to prevent typing errors.
+        var skipConfirmation = mmCoreConfigConstants.skipssoconfirmation && mmCoreConfigConstants.skipssoconfirmation !== 'false',
+            promise = skipConfirmation ? $q.when() : $mmUtil.showConfirm($translate('mm.login.logininsiterequired'));
+
+        promise.then(function() {
+            self.openBrowserForSSOLogin(siteurl, typeOfLogin);
+        });
+    };
 
     /**
      * Go to the view to add a new site.
@@ -93,20 +113,7 @@ angular.module('mm.core.login')
      * @return {Boolean}      True if SSO login is needed, false othwerise.
      */
     self.isSSOLoginNeeded = function(code) {
-        return code == mmLoginSSOCode;
-    };
-
-    /**
-     * Check if there's an SSO authentication ongoing. This should be true if the app was opened by a browser because of
-     * a SSO login and the authentication hasn't finished yet.
-     *
-     * @module mm.core.login
-     * @ngdoc method
-     * @name $mmLoginHelper#isSSOLoginOngoing
-     * @return {Boolean} True if SSO is ongoing, false otherwise.
-     */
-    self.isSSOLoginOngoing = function() {
-        return isSSOLoginOngoing;
+        return code == mmLoginSSOCode || code == mmLoginSSOInAppCode;
     };
 
     /**
@@ -116,8 +123,9 @@ angular.module('mm.core.login')
      * @ngdoc method
      * @name $mmLoginHelper#openBrowserForSSOLogin
      * @param {String} siteurl URL of the site where the SSO login will be performed.
+     * @param {Number} typeOfLogin mmLoginSSOCode or mmLoginSSOInAppCode
      */
-    self.openBrowserForSSOLogin = function(siteurl) {
+    self.openBrowserForSSOLogin = function(siteurl, typeOfLogin) {
         var passport = Math.random() * 1000;
         var loginurl = siteurl + "/local/mobile/launch.php?service=" + mmCoreConfigConstants.wsextservice;
         loginurl += "&passport=" + passport;
@@ -128,23 +136,20 @@ angular.module('mm.core.login')
         $mmConfig.set(mmLoginLaunchSiteURL, siteurl);
         $mmConfig.set(mmLoginLaunchPassport, passport);
 
-        $mmUtil.openInBrowser(loginurl);
-        if (navigator.app) {
-            navigator.app.exitApp();
+        if (typeOfLogin == mmLoginSSOInAppCode) {
+            $translate('mm.login.cancel').then(function(cancelStr) {
+                var options = {
+                    clearsessioncache: 'yes', // Clear the session cache to allow for multiple logins.
+                    closebuttoncaption: cancelStr,
+                };
+                $mmUtil.openInApp(loginurl, options);
+            });
+        } else {
+            $mmUtil.openInBrowser(loginurl);
+            if (navigator.app) {
+                navigator.app.exitApp();
+            }
         }
-    };
-
-    /**
-     * Set the "SSO authentication ongoing" flag to true or false.
-     *
-     * @module mm.core.login
-     * @ngdoc method
-     * @name $mmLoginHelper#setSSOLoginOngoing
-     * @param {Boolean} value Value to set.
-     * @return {Void}
-     */
-    self.setSSOLoginOngoing = function(value) {
-        isSSOLoginOngoing = value;
     };
 
     /**
@@ -223,6 +228,29 @@ angular.module('mm.core.login')
             return deferred.promise;
         } else {
             return $mmSitesManager.newSite(siteurl, token);
+        }
+    };
+
+    /**
+     * Convenient helper to handle get User Token error. It redirects to change password page ig forcepassword is set.
+     *
+     * @module mm.core.login
+     * @ngdoc method
+     * @name $mmLoginHelper#treatUserTokenError
+     * @param {String}          siteurl  Site URL to construct change password URL.
+     * @param {Object|String}   error    Error object containing errorcode and error message.
+     */
+    self.treatUserTokenError = function(siteurl, error) {
+        if (typeof error == 'string') {
+            $mmUtil.showErrorModal(error);
+        } else if (error.errorcode == 'forcepasswordchangenotice') {
+            var message = error.error + "<br>" + $translate.instant('mm.login.visitchangepassword');
+            $mmUtil.showConfirm(message, $translate.instant('mm.core.notice')).then(function() {
+                var changepasswordurl = siteurl + "/login/change_password.php";
+                $mmUtil.openInApp(changepasswordurl);
+            });
+        } else {
+            $mmUtil.showErrorModal(error.error);
         }
     };
 

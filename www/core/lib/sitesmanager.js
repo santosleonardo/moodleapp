@@ -97,7 +97,14 @@ angular.module('mm.core')
             // Now, replace the siteurl with the protocol.
             siteurl = siteurl.replace(/^http(s)?\:\/\//i, protocol);
 
-            return self.siteExists(siteurl).then(function() {
+            return self.siteExists(siteurl).catch(function() {
+                // Site doesn't exist. Try to add or remove 'www'.
+                var treatedUrl = $mmText.addOrRemoveWWW(siteurl);
+                return self.siteExists(treatedUrl).then(function() {
+                    // Success, use this new URL as site url.
+                    siteurl = treatedUrl;
+                });
+            }).then(function() {
                 // Create a temporary site to check if local_mobile is installed.
                 var temporarySite = $mmSitesFactory.makeSite(undefined, siteurl);
                 return temporarySite.checkLocalMobilePlugin().then(function(data) {
@@ -182,6 +189,8 @@ angular.module('mm.core')
                         if (!retry && data.errorcode == "requirecorrectaccess") {
                             siteurl = $mmText.addOrRemoveWWW(siteurl);
                             return self.getUserToken(siteurl, username, password, service, true);
+                        } else if (typeof data.errorcode != 'undefined') {
+                            return $q.reject({error: data.error, errorcode: data.errorcode});
                         } else {
                             return $q.reject(data.error);
                         }
@@ -575,9 +584,10 @@ angular.module('mm.core')
      */
     self.logout = function() {
         currentSite = undefined;
-        $mmEvents.trigger(mmCoreEventLogout);
-        return $mmApp.getDB().remove(mmCoreCurrentSiteStore, 1);
-    }
+        return $mmApp.getDB().remove(mmCoreCurrentSiteStore, 1).finally(function() {
+            $mmEvents.trigger(mmCoreEventLogout);
+        });
+    };
 
     /**
      * Restores the session to the previous one so the user doesn't has to login everytime the app is started.
