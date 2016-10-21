@@ -39,10 +39,6 @@ $button-default-active-border: $positive;
   color: #fff;
 }
 
-.bar-header {
-    background-color: #009688;
-}
-
 .button, .button.button-light, .button.button-stable, .button.button-positive, .button.button-calm, .button.button-assertive,
 .button.button-balanced, .button.button-energized, .button.button-royal, .button.button-dark {
   border-color: $button-default-border;
@@ -76,3 +72,7 @@ $button-default-active-border: $positive;
 
 // Include all of Moodle Mobile.
 @import "www/build/mm.bundle.scss";
+
+.bar-header {
+    background-color: #009688;
+}
