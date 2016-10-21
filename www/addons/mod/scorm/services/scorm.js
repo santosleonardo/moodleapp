@@ -846,14 +846,15 @@ angular.module('mm.addons.mod_scorm')
     /**
      * Get a SCORM with key=value. If more than one is found, only the first will be returned.
      *
-     * @param  {String} siteId    Site ID.
-     * @param  {Number} courseId  Course ID.
-     * @param  {String} key       Name of the property to check.
-     * @param  {Mixed} value      Value to search.
-     * @param  {String} moduleUrl Module URL.
-     * @return {Promise}          Promise resolved when the SCORM is retrieved.
+     * @param  {String}     siteId          Site ID.
+     * @param  {Number}     courseId        Course ID.
+     * @param  {String}     key             Name of the property to check.
+     * @param  {Mixed}      value           Value to search.
+     * @param  {String}     moduleUrl       Module URL.
+     * @param  {Boolean}    [forceCache]    True to always get the value from cache, false otherwise. Default false.
+     * @return {Promise}                    Promise resolved when the SCORM is retrieved.
      */
-    function getScorm(siteId, courseId, key, value, moduleUrl) {
+    function getScorm(siteId, courseId, key, value, moduleUrl, forceCache) {
         return $mmSitesManager.getSite(siteId).then(function(site) {
             var params = {
                     courseids: [courseId]
@@ -861,6 +862,10 @@ angular.module('mm.addons.mod_scorm')
                 preSets = {
                     cacheKey: getScormDataCacheKey(courseId)
                 };
+
+            if (forceCache) {
+                preSets.omitExpires = true;
+            }
 
             return site.read('mod_scorm_get_scorms_by_courses', params, preSets).then(function(response) {
                 if (response && response.scorms) {
@@ -894,15 +899,16 @@ angular.module('mm.addons.mod_scorm')
      * @module mm.addons.mod_scorm
      * @ngdoc method
      * @name $mmaModScorm#getScorm
-     * @param {Number} courseId  Course ID.
-     * @param {Number} cmid      Course module ID.
-     * @parma {String} moduleUrl Module URL.
-     * @param {String} [siteId]  Site ID. If not defined, current site.
-     * @return {Promise}         Promise resolved when the SCORM is retrieved.
+     * @param   {Number}    courseId        Course ID.
+     * @param   {Number}    cmid            Course module ID.
+     * @parma   {String}    moduleUrl       Module URL.
+     * @param   {String}    [siteId]        Site ID. If not defined, current site.
+     * @param   {Boolean}   [forceCache]    True to always get the value from cache, false otherwise. Default false.
+     * @return  {Promise}                   Promise resolved when the SCORM is retrieved.
      */
-    self.getScorm = function(courseId, cmid, moduleUrl, siteId) {
+    self.getScorm = function(courseId, cmid, moduleUrl, siteId, forceCache) {
         siteId = siteId || $mmSite.getId();
-        return getScorm(siteId, courseId, 'coursemodule', cmid, moduleUrl);
+        return getScorm(siteId, courseId, 'coursemodule', cmid, moduleUrl, forceCache);
     };
 
     /**
@@ -911,15 +917,16 @@ angular.module('mm.addons.mod_scorm')
      * @module mm.addons.mod_scorm
      * @ngdoc method
      * @name $mmaModScorm#getScormById
-     * @param {Number} courseId  Course ID.
-     * @param {Number} cmid      Course module ID.
-     * @parma {String} moduleUrl Module URL.
-     * @param {String} [siteId]  Site ID. If not defined, current site.
-     * @return {Promise}         Promise resolved when the SCORM is retrieved.
+     * @param   {Number}    courseId        Course ID.
+     * @param   {Number}    cmid            Course module ID.
+     * @parma   {String}    moduleUrl       Module URL.
+     * @param   {String}    [siteId]        Site ID. If not defined, current site.
+     * @param   {Boolean}   [forceCache]    True to always get the value from cache, false otherwise. Default false.
+     * @return  {Promise}                   Promise resolved when the SCORM is retrieved.
      */
-    self.getScormById = function(courseId, id, moduleUrl, siteId) {
+    self.getScormById = function(courseId, id, moduleUrl, siteId, forceCache) {
         siteId = siteId || $mmSite.getId();
-        return getScorm(siteId, courseId, 'id', id, moduleUrl);
+        return getScorm(siteId, courseId, 'id', id, moduleUrl, forceCache);
     };
 
     /**
@@ -1084,22 +1091,6 @@ angular.module('mm.addons.mod_scorm')
                     site.wsAvailable('mod_scorm_get_scorms_by_courses') &&
                     site.wsAvailable('mod_scorm_insert_scorm_tracks');
         });
-    };
-
-    /**
-     * Check if a SCORM is being played right now.
-     *
-     * @module mm.addons.mod_scorm
-     * @ngdoc method
-     * @name $mmaModScorm#isScormBeingPlayed
-     * @param  {Number}  scormId SCORM ID.
-     * @param {String} [siteId]  Site ID. If not defined, current site.
-     * @return {Boolean}         True if it's being played, false otherwise.
-     */
-    self.isScormBeingPlayed = function(scormId, siteId) {
-        siteId = siteId || $mmSite.getId();
-        return $mmSite.getId() == siteId && $state.current.name == 'site.mod_scorm-player' &&
-                        $state.params.scorm && $state.params.scorm.id == scormId;
     };
 
     /**

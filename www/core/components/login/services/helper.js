@@ -84,7 +84,11 @@ angular.module('mm.core.login')
             // Configured to go to Site Home. Check if plugin is installed in the app.
             var $mmaFrontpage = $mmAddonManager.get('$mmaFrontpage');
             if ($mmaFrontpage) {
-                return $state.go('site.mm_course-section');
+                return $mmaFrontpage.isFrontpageAvailable().then(function() {
+                    return $state.go('site.mm_course-section');
+                }).catch(function() {
+                    return $state.go('site.mm_courses');
+                });
             }
         }
 
@@ -244,14 +248,28 @@ angular.module('mm.core.login')
         if (typeof error == 'string') {
             $mmUtil.showErrorModal(error);
         } else if (error.errorcode == 'forcepasswordchangenotice') {
-            var message = error.error + "<br>" + $translate.instant('mm.login.visitchangepassword');
-            $mmUtil.showConfirm(message, $translate.instant('mm.core.notice')).then(function() {
-                var changepasswordurl = siteurl + "/login/change_password.php";
-                $mmUtil.openInApp(changepasswordurl);
-            });
+            self.openChangePassword(siteurl, error.error);
         } else {
             $mmUtil.showErrorModal(error.error);
         }
+    };
+
+    /**
+     * Convenient helper to open change password page.
+     *
+     * @module mm.core.login
+     * @ngdoc method
+     * @name $mmLoginHelper#openChangePassword
+     * @param {String}   siteurl  Site URL to construct change password URL.
+     * @param {String}   error    Error message.
+     */
+    self.openChangePassword = function(siteurl, error) {
+        var message = error + "<br>" + $translate.instant('mm.login.visitchangepassword');
+        return $mmUtil.showConfirm(message, $translate.instant('mm.core.notice')).then(function() {
+            var changepasswordurl = siteurl + "/login/change_password.php";
+            $mmUtil.openInApp(changepasswordurl);
+            return $q.when();
+        });
     };
 
     return self;

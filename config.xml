@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<widget id="br.pro.avp.avpmobile" version="3.1.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="br.pro.avp.avpmobile" version="3.1.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>AVP Mobile</name>
   <description>Aplicativo Oficial do Ambiente Virtual de Pesquisa</description>
   <author href="http://www.avp.pro.br" email="mauriciorochacruz@gmail.com">Mauricio Cruz</author>
