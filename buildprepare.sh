@@ -2,7 +2,11 @@
 
 # Criar fork do repositorio https://github.com/moodlehq/moodlemobile-phonegapbuild.git e clonar
 
-cd ../moodlemobile-phonegapbuild
+cd ..
+
+git clone https://github.com/santosleonardo/moodlemobile-phonegapbuild.git
+
+cd moodlemobile-phonegapbuild
 
 git checkout -b avpmobile
 
@@ -24,4 +28,8 @@ rm config.xml.OLD
 
 sed -e 's/true)/false)/' -i .OLD core/lib/log.js
 rm core/lib/log.js.OLD
+
+git add .
+git commit -m "Version update."
+git push origin avpmobile
 
