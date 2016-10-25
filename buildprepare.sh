@@ -8,7 +8,12 @@ git clone https://github.com/santosleonardo/moodlemobile-phonegapbuild.git
 
 cd moodlemobile-phonegapbuild
 
-git checkout -b avpmobile
+if [ $(git branch -a | grep avpmobile | wc -l) -gt 0 ]
+then
+    git checkout avpmobile
+else
+    git checkout -b avpmobile
+fi
 
 cp -R ../moodlemobile2/www/* .
 
