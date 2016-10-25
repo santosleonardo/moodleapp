@@ -15,7 +15,7 @@
             <section class="card" ng-repeat="section in sections" ng-if="section.modules.length > 0 || section.summary != ''">
                 <!-- Title and summary are displayed when multiple sections per page. -->
                 <div class="item item-divider" ng-if="allSections">
-                    <h2><mm-format-text watch="true">{{ section.name }}</mm-format-text></h2>
+                    <h2><mm-format-text watch="true"><!-- section.name --></mm-format-text></h2>
                 </div>
 
                 <div class="item item-text-wrap" ng-if="allSections && section.summary">
