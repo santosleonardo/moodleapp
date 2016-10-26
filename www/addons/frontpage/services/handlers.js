@@ -70,7 +70,7 @@ angular.module('mm.addons.frontpage')
              */
             return function($scope) {
                 $scope.icon = 'ion-home';
-                $scope.title = 'mma.frontpage.sitehome';
+                $scope.title = 'AVP!';//'mma.frontpage.sitehome'
                 $scope.state = 'site.mm_course-section';
                 $scope.class = 'mma-frontpage-handler';
             };
