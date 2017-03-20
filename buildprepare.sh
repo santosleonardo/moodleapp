@@ -15,10 +15,17 @@ then
     git checkout posalfa
 else
     git checkout -b posalfa master
-    
-    sed -e 's/com.moodle.moodlemobile/br.pro.avp.posalfa/' -i .OLD config.xml
+fi
+
+cp -R ../moodlemobile2/www/* .
+
+cp -R ../moodlemobile2/resources/* resources/
+
+cp ../moodlemobile2/resources/splash.png ../moodlemobile2/resources/android/icon.png .
+
+sed -e 's/com.moodle.moodlemobile/br.pro.avp.posalfa/' -i .OLD config.xml
     sed -e 's/>Moodle Mobile/>POSALFA/' -i .OLD config.xml
-    sed -e 's/Moodle Mobile official app/PÓS-GRADUAÇÃO LATO SENSU ALFABETIZAÇÃO DAS CRIANÇAS DAS CLASSES POPULARES/' -i .OLD config.xml
+    sed -e 's/Moodle Mobile official app/P√ìS-GRADUA√á√ÉO LATO SENSU ALFABETIZA√á√ÉO DAS CRIAN√áAS DAS CLASSES POPULARES/' -i .OLD config.xml
     sed -e 's/http:\/\/moodle.com/http:\/\/www.avp.pro.br/' -i .OLD config.xml
     sed -e 's/mobile@moodle.com/posalfauff@gmail.com/' -i .OLD config.xml
     sed -e 's/Moodle Pty Ltd/Carmen Peres/' -i .OLD config.xml
@@ -28,13 +35,6 @@ else
     
     sed -e 's/true)/false)/' -i .OLD core/lib/log.js
     rm core/lib/log.js.OLD
-fi
-
-cp -R ../moodlemobile2/www/* .
-
-cp -R ../moodlemobile2/resources/* resources/
-
-cp ../moodlemobile2/resources/splash.png ../moodlemobile2/resources/android/icon.png .
 
 git add .
 git commit -m "Version update."
