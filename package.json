@@ -62,7 +62,7 @@
     },
     {
       "variables": {
-        "URL_SCHEME": "avpmobile"
+        "URL_SCHEME": "posalfa"
       },
       "locator": "cordova-plugin-customurlscheme",
       "id": "cordova-plugin-customurlscheme"

@@ -1,6 +1,6 @@
 {
-    "app_id" : "br.pro.avp.avpmobile",
-    "appname": "AVP Mobile",
+    "app_id" : "br.pro.avp.posalfa",
+    "appname": "POSALFA",
     "versioncode" : "2017",
     "versionname" : "3.2.1",
     "cache_expiration_time" : 300000,
@@ -10,7 +10,7 @@
     "wsextservice" : "local_mobile",
     "demo_sites": {},
     "gcmpn": "694767596569",
-    "customurlscheme": "avpmobile",
+    "customurlscheme": "posalfa",
     "siteurl": "http://www.avp.pro.br",
     "skipssoconfirmation": "false",
     "forcedefaultlanguage": "false",
