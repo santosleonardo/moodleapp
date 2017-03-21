@@ -1,3 +1,7 @@
 {
-    "pluginname": "Tarefa"
+    "addsubmission": "Adicionar tarefa",
+    "noattempt": "Nenhuma tentativa",
+    "notgraded": "N‹o h‡ notas",
+    "pluginname": "Tarefa",
+    "submissionstatus": "Status de envio"
 }
