@@ -24,7 +24,7 @@ cp -R ../moodlemobile2/resources/* resources/
 cp ../moodlemobile2/resources/splash.png ../moodlemobile2/resources/android/icon.png .
 
 sed -e 's/com.moodle.moodlemobile/br.pro.avp.posalfa/' -i .OLD config.xml
-sed -e 's/>Moodle Mobile/>POSALFA/' -i .OLD config.xml
+sed -e 's/>Moodle Mobile/>PosAlfa/' -i .OLD config.xml
 sed -e 's/Moodle Mobile official app/POS-GRADUACAO LATO SENSU ALFABETIZACAO DAS CRIANCAS DAS CLASSES POPULARES/' -i .OLD config.xml
 sed -e 's/http:\/\/moodle.com/http:\/\/www.avp.pro.br/' -i .OLD config.xml
 sed -e 's/mobile@moodle.com/posalfauff@gmail.com/' -i .OLD config.xml
