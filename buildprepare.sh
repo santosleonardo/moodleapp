@@ -4,11 +4,11 @@
 
 cd ..
 
-if [ ! -d  moodlemobile-phonegapbuild ]; then
-    git clone https://github.com/santosleonardo/moodlemobile-phonegapbuild.git
+if [ ! -d  moodlemobile-phonegapbuild-posalfa ]; then
+    git clone https://github.com/santosleonardo/moodlemobile-phonegapbuild.git moodlemobile-phonegapbuild-posalfa
 fi
 
-cd moodlemobile-phonegapbuild
+cd moodlemobile-phonegapbuild-posalfa
 
 if [ $(git branch -a | grep posalfa | wc -l) -gt 0 ]
 then
