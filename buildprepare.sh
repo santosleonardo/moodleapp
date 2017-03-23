@@ -2,6 +2,8 @@
 
 # Quando ha atualizacoes em https://github.com/moodlehq/moodlemobile-phonegapbuild.git e necessario remover o fork criado e cria-lo novamente com as atualizacoes.
 
+gulp
+
 cd ..
 
 if [ ! -d  moodlemobile-phonegapbuild-posalfa ]; then
